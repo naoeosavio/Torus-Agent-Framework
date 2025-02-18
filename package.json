@@ -1,0 +1,17 @@
+{
+  "name": "torusagentframework",
+  "version": "0.1.0",
+  "description": "a small framework for creating Torus Agents with self-describing APIs",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "it is not savio",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
