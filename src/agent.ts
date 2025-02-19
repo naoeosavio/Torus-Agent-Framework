@@ -1,6 +1,5 @@
-import express from "express";
 import { OpenAPIV3 } from "openapi-types";
-import { z, ZodSchema } from "zod";
+import { ZodSchema } from "zod";
 
 export interface AgentMethodOptions<Input, Output> {
   input: ZodSchema<Input>;
