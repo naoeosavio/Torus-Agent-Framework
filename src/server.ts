@@ -1,6 +1,6 @@
-import express from "express";
-import { z } from "zod";
-import { Agent } from "./agent";
+import express from 'express';
+
+import { Agent } from './agent';
 
 /**
  * AgentServer exposes an Agent's methods over HTTP using Express.
@@ -42,7 +42,7 @@ export class AgentServer {
     this.app.get("/openapi.json", (req, res) => {
       res.json(this.agent.generateOpenAPISpec());
     });
-    
+
     // Add a default route for GET /
     this.app.get("/", (req, res) => {
       res.send(
@@ -62,4 +62,3 @@ export class AgentServer {
     });
   }
 }
-export { z };
