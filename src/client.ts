@@ -1,22 +1,46 @@
-import { Agent } from './agent';
+import { AgentMethodOptions } from './agent';
 
 /**
- * Type-safe client to call methods on an Agent.
+ * A type-safe client to call Agent methods over HTTP.
+ *
+ * This client validates the request payload using the provided input schema,
+ * performs an HTTP POST to the Agent endpoint, and then validates the response
+ * using the output schema.
  */
-export class AgentClient<T extends Agent> {
-  private agentInstance: T;
-
-  constructor(agentInstance: T) {
-    this.agentInstance = agentInstance;
-  }
+export class AgentClient {
+  constructor(private baseUrl: string) {}
 
   /**
-   * Call an agent method by name.
+   * Calls an Agent method and returns the parsed output.
+   *
+   * @param methodName - The name of the Agent method (also the URL endpoint).
+   * @param args - The input parameters for the method.
+   * @param options - The Zod schemas for input and output validation.
+   * @returns The validated response output.
    */
-  async call<K extends keyof T>(method: K, ...args: any[]): Promise<any> {
-    if (typeof this.agentInstance[method] === 'function') {
-      return await (this.agentInstance[method] as any)(...args);
+  async call<Input, Output>(
+    methodName: string,
+    args: Input,
+    options: AgentMethodOptions<Input, Output>
+  ): Promise<Output> {
+    // Validate the input using the provided schema.
+    const validatedInput = options.input.parse(args);
+
+    const response = await fetch(`${this.baseUrl}/${methodName}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(validatedInput)
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Request to ${methodName} failed: ${response.status} ${response.statusText}`
+      );
     }
-    throw new Error(`Method ${String(method)} not found on agent`);
+
+    const jsonResponse = await response.json();
+
+    // Validate the output using the provided schema.
+    return options.output.parse(jsonResponse);
   }
 }
