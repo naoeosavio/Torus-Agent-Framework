@@ -1,6 +1,6 @@
 // Define newtype/branded types
 
-import { z } from './';
+import { z } from './index';
 
 export type CID = string & { readonly __brand: unique symbol };
 export const CID = z.string().transform((val) => val as CID);
